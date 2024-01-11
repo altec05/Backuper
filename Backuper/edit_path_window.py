@@ -217,6 +217,18 @@ class EditPathWindow(CTk.CTkToplevel):
         self.e_amount.pack(padx=20, side='left')
         self.e_amount.insert(0, vs.temp_amount)
 
+        def no_multiple_checkbox_event():
+            vs.temp_no_multiple_flag = self.no_multiple_checkbox.get()
+
+        self.no_multiple_checkbox = CTk.CTkCheckBox(master=self.amount_frame,
+                                                  text="Не участвовать в множественном копировании",
+                                                  command=no_multiple_checkbox_event, onvalue=True, offvalue=False,
+                                                  corner_radius=6, border_width=1)
+        self.no_multiple_checkbox.pack(side='left', ipadx=5, ipady=5, pady=5, anchor='w')
+
+        if vs.temp_no_multiple_flag == 'True':
+            self.no_multiple_checkbox.select()
+
         self.b_confirm = CTk.CTkButton(self.amount_frame, text='Сохранить', command=self.confirm)
         self.b_confirm.pack(padx=10, side='right')
 
@@ -265,6 +277,7 @@ class EditPathWindow(CTk.CTkToplevel):
         vs.temp_from_pathes_old = []
         vs.temp_from_names_old = []
         vs.temp_amount = 3
+        vs.temp_no_multiple_flag = False
 
     def get_date(self):
         def print_sel():
@@ -342,6 +355,11 @@ class EditPathWindow(CTk.CTkToplevel):
                         if not uniq_name_flag:
                             vs.temp_name = name
                             vs.temp_amount = int(amount)
+
+                            no_multiple = 'False'
+                            if vs.temp_no_multiple_flag:
+                                no_multiple = 'True'
+
                             if vs.temp_date:
                                 if vs.today_flag:
                                     vs.multi_paths[name] = {
@@ -349,7 +367,8 @@ class EditPathWindow(CTk.CTkToplevel):
                                         'to_path': vs.temp_to_path,
                                         'on_date': vs.temp_date,
                                         'today': 'True',
-                                        'amount': vs.temp_amount
+                                        'amount': vs.temp_amount,
+                                        'no_multiple': no_multiple
                                     }
                                 else:
                                     vs.multi_paths[name] = {
@@ -357,7 +376,8 @@ class EditPathWindow(CTk.CTkToplevel):
                                         'to_path': vs.temp_to_path,
                                         'on_date': vs.temp_date,
                                         'today': 'False',
-                                        'amount': vs.temp_amount
+                                        'amount': vs.temp_amount,
+                                        'no_multiple': no_multiple
                                     }
                             else:
                                 vs.multi_paths[name] = {
@@ -365,7 +385,8 @@ class EditPathWindow(CTk.CTkToplevel):
                                     'to_path': vs.temp_to_path,
                                     'on_date': 'False',
                                     'today': 'False',
-                                    'amount': vs.temp_amount
+                                    'amount': vs.temp_amount,
+                                    'no_multiple': no_multiple
                                 }
 
                             # Перезаписываем конфиг
@@ -384,6 +405,10 @@ class EditPathWindow(CTk.CTkToplevel):
                                 vs.temp_date_old = ''
 
                                 vs.temp_amount = 3
+
+                                vs.temp_no_multiple_flag = False
+                                self.no_multiple_checkbox.deselect()
+                                vs.temp_no_multiple_flag = self.no_multiple_checkbox.get()
 
                                 self.dismiss()
                         else:

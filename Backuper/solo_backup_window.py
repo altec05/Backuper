@@ -121,7 +121,6 @@ class SoloBackupWindow(CTk.CTkToplevel):
     # Удаление маршрута
     def start_backup_for_path(self):
         # Получаем имя маршрута из поля
-        # path = self.e_path.get().strip(' ')
         path = self.e_path.get()
         if path != '':
             if not path in vs.copied_routes:
@@ -151,16 +150,17 @@ class SoloBackupWindow(CTk.CTkToplevel):
                         # Выводим отчет о копировании
                         if vs.rez_list:
                             out_str = ''
-                            for rez in vs.rez_list:
-                                out_str += rez
+                            if len(vs.rez_list) <= 13:
+                                for rez in vs.rez_list:
+                                    out_str += rez
+                            else:
+                                out_str = f'Объектов обработано: {len(vs.rez_list)}'
                             mes.showinfo('Результаты резервного копирования', out_str)
 
                         vs.rez_list.clear()
 
                         self.solo_backup_label.configure(text='Ожидание начала копирования...')
                         self.solo_backup_label.configure(text_color='red')
-
-                        # self.dismiss()
                     else:
                         mes.showerror('Выбор маршрута', f'Маршрут {path} не найден!')
                 else:

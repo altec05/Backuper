@@ -12,7 +12,6 @@ import customtkinter as CTk
 import edit_path_window
 import service_funcs
 import variables as vs
-import tkinter.filedialog as fd
 import messages as mes
 
 
@@ -50,7 +49,6 @@ class MultiFoldersWindow(CTk.CTkToplevel):
         img_edit = CTk.CTkImage(light_image=Image.open("images/edit.gif"),
                                 dark_image=Image.open("images/edit.gif"),
                                 size=(20, 20))
-        # img_edit = PhotoImage(file="images/edit.gif")
         self.b_path_edit = CTk.CTkButton(self.name_frame, text='', command=self.show_edit_path_window, width=50,
                                          image=img_edit)
         self.b_path_edit.pack(padx=20, pady=5, side='left', fill='none')
@@ -58,7 +56,6 @@ class MultiFoldersWindow(CTk.CTkToplevel):
         img_del = CTk.CTkImage(light_image=Image.open("images/del.gif"),
                                           dark_image=Image.open("images/del.gif"),
                                           size=(20, 20))
-        # img_del = CTk.CTkImage(file="images/del.gif")
         self.b_path_del = CTk.CTkButton(self.name_frame, text='', command=self.del_path, width=50, image=img_del)
         self.b_path_del.pack(padx=10, pady=5, side='left', fill='none')
 
@@ -85,47 +82,25 @@ class MultiFoldersWindow(CTk.CTkToplevel):
     # Перевод словаря в читабельный вид для виджета
     def get_paths(self, paths_dict):
         paths_str = ''
-        # paths_list = list(paths_dict.items())
-        # paths_list.sort()
-        # try:
-        # Поулчаем ключи
-        print(paths_dict)
+        # Получаем ключи
         paths_list = []
         for main_key in paths_dict:
             paths_list.append(main_key)
         paths_list.sort()
         for main_key in paths_list:
-            print(main_key)
             if paths_dict[main_key]['on_date'] != 'False':
                 if paths_dict[main_key]['today'] != 'False':
                     try:
-                        paths_str += 'Имя:\t' +  main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + service_funcs.str_to_true_date_format(paths_dict[main_key]['on_date']) + '\nТекущая:\t' + 'Да' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\n\n'
+                        paths_str += 'Имя:\t' +  main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + service_funcs.str_to_true_date_format(paths_dict[main_key]['on_date']) + '\nТекущая:\t' + 'Да' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\nТолько ручной:\t' + paths_dict[main_key]['no_multiple'] + '\n\n'
                     except:
-                        paths_str += 'Имя:\t' +  main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + paths_dict[main_key]['on_date'] + '\nТекущая:\t' + 'Да' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\n\n'
+                        paths_str += 'Имя:\t' +  main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + paths_dict[main_key]['on_date'] + '\nТекущая:\t' + 'Да' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\nТолько ручной:\t' + paths_dict[main_key]['no_multiple'] + '\n\n'
                 else:
                     try:
-                        paths_str += 'Имя:\t' + main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + service_funcs.str_to_true_date_format(paths_dict[main_key]['on_date']) + '\nТекущая:\t' + 'Нет' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\n\n'
+                        paths_str += 'Имя:\t' + main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + service_funcs.str_to_true_date_format(paths_dict[main_key]['on_date']) + '\nТекущая:\t' + 'Нет' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\nТолько ручной:\t' + paths_dict[main_key]['no_multiple'] + '\n\n'
                     except:
-                        paths_str += 'Имя:\t' + main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + paths_dict[main_key]['on_date'] + '\nТекущая:\t' + 'Нет' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\n\n'
+                        paths_str += 'Имя:\t' + main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + paths_dict[main_key]['on_date'] + '\nТекущая:\t' + 'Нет' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\nТолько ручной:\t' + paths_dict[main_key]['no_multiple'] + '\n\n'
             else:
-                paths_str += 'Имя:\t' +  main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + 'Нет' + '\nТекущая:\t' + 'Нет' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\n\n'
-
-                # for key, values in paths_list:
-            #     paths_str += key
-            #     counter = 0
-            #     for value in values:
-            #         if counter == 0:
-            #             paths_str += '\n\tИз:\n'
-            #             for path in value:
-            #                 paths_str += '\t' + path + '\n'
-            #             counter += 1
-            #         elif counter == 1:
-            #             paths_str += '\tВ: ' + '\n\t' + value + '\n'
-            #             counter += 1
-            #     paths_str += '\n'
-            # return paths_str
-        # except:
-        #     pass
+                paths_str += 'Имя:\t' +  main_key + '\nИз:\t' + str(paths_dict[main_key]['from_path']) + '\nВ:\t' + paths_dict[main_key]['to_path'] + '\nДата:\t' + 'Нет' + '\nТекущая:\t' + 'Нет' + '\nМакс.Копий:\t' + str(paths_dict[main_key]['amount']) + '\nТолько ручной:\t' + paths_dict[main_key]['no_multiple'] + '\n\n'
         return paths_str
 
     # Выход из окна настройки
@@ -171,7 +146,8 @@ class MultiFoldersWindow(CTk.CTkToplevel):
                     # Удаляем маршрут по ключу
                     try:
                         del vs.multi_paths[path]
-                        del vs.copied_routes[path]
+                        if path in vs.copied_routes:
+                            vs.copied_routes.remove(path)
                         # Обновляем конфиг-файл
                         code = service_funcs.update_config(vs.multi_paths)
                         # Если обновлен без ошибок
@@ -202,10 +178,9 @@ class MultiFoldersWindow(CTk.CTkToplevel):
     def show_edit_path_window(self):
         name = self.e_path.get().strip(' ')
         if name:
-            # try:
+            try:
                 rez = vs.multi_paths.get(name)
                 if rez:
-                    # vs.temp_from_path = rez[0]
                     vs.temp_from_pathes = rez['from_path']
                     vs.temp_to_path = rez['to_path']
                     vs.temp_date = rez['on_date']
@@ -214,14 +189,16 @@ class MultiFoldersWindow(CTk.CTkToplevel):
                     else:
                         vs.today_flag = True
 
+                    vs.temp_amount = rez['amount']
+                    vs.temp_no_multiple_flag = rez['no_multiple']
+
                     if vs.previous_toplevel_window is None:
                         vs.temp_name = name
                         # цикл по путям для получения имен файлов и вывода или путями
-                        # vs.temp_from_names = rez[]
                         vs.toplevel_window = edit_path_window.EditPathWindow(self)
                         vs.previous_toplevel_window = self
                         self.withdraw()
-            # except:
-            #     mes.showerror('Редактирование маршрута', 'Маршрут не найден!')
+            except:
+                mes.showerror('Редактирование маршрута', 'Маршрут не найден!')
         else:
             mes.showerror('Редактирование маршрута', 'Укажите корректное имя маршрута!')

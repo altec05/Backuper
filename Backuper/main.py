@@ -54,10 +54,6 @@ class App(CTk.CTk):
         self.multi_backup_frame = CTk.CTkFrame(master=self.multi_frame, fg_color='transparent')
         self.multi_backup_frame.pack(fill='x', ipadx=10)
 
-        # # Статус копирования
-        # self.status_frame = CTk.CTkFrame(master=self, fg_color='transparent', height=100)
-        # self.status_frame.pack(fill='x', ipadx=10, pady=5)
-
         # Опции приложения
         self.options_frame = CTk.CTkFrame(master=self, fg_color='transparent', height=100)
         self.options_frame.pack(fill='x', ipadx=10, ipady=5, pady=15)
@@ -101,11 +97,6 @@ class App(CTk.CTk):
         vs.clear_folder_before_flag = True
         self.chb_folder_clear.select()
 
-        # self.status_label = CTk.CTkLabel(master=self.status_frame, text='Ожидание...',
-        #                                       wraplength=450,
-        #                                       text_color='red', anchor='w')
-        # self.status_label.pack(side='left', padx=20)
-
         # Опции приложения
         # Смена темы
         self.appearance_mode_option_menu = CTk.CTkOptionMenu(master=self.options_frame,
@@ -121,7 +112,7 @@ class App(CTk.CTk):
         # Инструкция
         self.show_instruction_button = CTk.CTkButton(master=self.options_frame, text='Инструкция', width=125,
                                                      command=self.show_instruction)
-        self.show_instruction_button.pack(side='right', pady=5, padx=25)
+        self.show_instruction_button.pack(side='right', pady=5)
 
         self.toplevel_window = None
 
@@ -161,11 +152,6 @@ class App(CTk.CTk):
             vs.previous_window = self
             self.withdraw()
 
-        # if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-        #     self.toplevel_window = AddFolderWindow(self)  # create window if its None or destroyed
-        # else:
-        #     self.toplevel_window.focus()  # if window exists focus it
-
     def start_multi_backuping(self):
         paths_dicts = service_funcs.read_config()
         paths_list = []
@@ -180,25 +166,31 @@ class App(CTk.CTk):
                 on_date = paths_dicts[main_key]['on_date']
                 today = paths_dicts[main_key]['today']
                 amount = paths_dicts[main_key]['amount']
+                no_multiple = paths_dicts[main_key]['no_multiple']
                 if today == 'True':
                     on_date = vs.date_today
-                if not name in vs.copied_routes:
-                    service_funcs.backup_bd(from_path, to_path, name, on_date, amount, self)
+                if no_multiple == 'False':
+                    if not name in vs.copied_routes:
+                        service_funcs.backup_bd(from_path, to_path, name, on_date, amount, self)
+                    else:
+                        vs.rez_list.append(
+                            f'{len(vs.rez_list) + 1}. В этой сессии для маршрута "{name}" уже проводилось копирование, а повторное'
+                                                    f' запрещено!\n\nДля повтора перезапустите программу.\n\n')
                 else:
                     vs.rez_list.append(
-                        f'{len(vs.rez_list) + 1}. В этой сессии для маршрута "{name}" уже проводилось копирование, а повторное'
-                                                f' запрещено!\n\nДля повтора перезапустите программу.\n\n')
+                        f'{len(vs.rez_list) + 1}. Маршрут "{name}" не участвует во множественном копировании.\n\n')
             self.solo_backup_label.configure(text='Копирование завершено!')
             self.solo_backup_label.configure(text_color='green')
             # Выводим отчет о копировании
             if vs.rez_list:
                 out_str = ''
-                for rez in vs.rez_list:
-                    out_str += rez
+                if len(vs.rez_list) <= 13:
+                    for rez in vs.rez_list:
+                        out_str += rez
+                else:
+                    out_str = f'Объектов обработано: {len(vs.rez_list)}'
                 mes.showinfo('Результаты резервного копирования', out_str)
             vs.rez_list.clear()
-            # mes.showwarning('Резервное копирование', 'Процесс копирования завершен!\n\nПриложение будет закрыто для сброса системного кэша.')
-            # self.on_close()
 
     def show_about(self):
         if vs.toplevel_window is None:
@@ -217,10 +209,6 @@ class App(CTk.CTk):
 
     def check_thread(self, thread):
         if thread.is_alive():
-            # if CTk.get_appearance_mode() == 'Dark':
-            #     self.status_label.configure(text='Ожидайте выполнения программы...', text_color='yellow')
-            # else:
-            #     self.status_label.configure(text='Ожидайте выполнения программы...', text_color='black')
             self.after(100, lambda: self.check_thread(thread))
         else:
             self.solo_backup_button.configure(state='normal')
@@ -246,7 +234,6 @@ class App(CTk.CTk):
         self.appearance_mode_option_menu.configure(state='disabled')
         self.show_about_button.configure(state='disabled')
         self.show_instruction_button.configure(state='disabled')
-        # self.status_label.configure(text='Старт резервного копирования...')
 
         mes.showwarning('Предупреждение о нагрузках', 'Внимание!\n\nПри копировании большого количества файлов интерфейс программы может не отвечать, дождитесь уведомления об окончании!')
 

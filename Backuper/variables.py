@@ -1,9 +1,11 @@
 import datetime
 import os
 
+import changes_list
+
 # Текущая версия программы
-app_version = '1.0'
-app_last_edit_version = '09.01.2024 г.'
+app_version = changes_list.last_change_version
+app_last_edit_version = changes_list.last_change_data
 
 # Файл config для хранения путей копирования
 path_config = os.path.abspath('config.json')
@@ -36,11 +38,14 @@ temp_date = ''
 temp_from_pathes_old = []
 temp_from_names_old = []
 
-# Коилчество копий
+# Количество копий
 temp_amount = 3
 
 # Перезапись и удаление файлов
 clear_folder_before_flag = True
+
+# Без множественного копирования
+temp_no_multiple_flag = False
 
 
 # Указание перезаписи даты на текущую дату при проверке

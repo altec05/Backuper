@@ -20,8 +20,8 @@ class AboutWindow(CTk.CTkToplevel):
         self.iconbitmap('logo.ico')
         CTk.deactivate_automatic_dpi_awareness()
 
-        label_text_up = f'Сведения о программе "Backuper"\n\n© Разработка и права: Домашенко Иван / ' \
-                        f'Специалист по защите информации\n\n\nПрограмма была разработана с целью упрощения создания ' \
+        label_text_up = f'Сведения о программе "Backuper"\n\n© Разработка и права: Домашенко Иван Константинович / ' \
+                        f'Отдел ИТ\n\n\nПрограмма была разработана с целью упрощения создания ' \
                         f'резервных копий\nбаз данных и иных необходимых файлов или директорий\n' \
                         f'Программа написана с применением языка программирования Python v3.11'
         label_text_center = f'Версия программы - ver. {vs.app_version} от {vs.app_last_edit_version}'

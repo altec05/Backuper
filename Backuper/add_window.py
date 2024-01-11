@@ -190,6 +190,15 @@ class AddFolderWindow(CTk.CTkToplevel):
         self.e_amount.pack(padx=20, side='left')
         self.e_amount.insert(0, 3)
 
+        def no_multiple_checkbox_event():
+            vs.temp_no_multiple_flag = self.no_multiple_checkbox.get()
+
+        self.no_multiple_checkbox = CTk.CTkCheckBox(master=self.amount_frame,
+                                                  text="Не участвовать в множественном копировании",
+                                                  command=no_multiple_checkbox_event, onvalue='True', offvalue='False',
+                                                  corner_radius=6, border_width=1)
+        self.no_multiple_checkbox.pack(side='left', ipadx=5, ipady=5, pady=5, anchor='w')
+
         self.b_confirm = CTk.CTkButton(self.amount_frame, text='Добавить маршрут', command=self.confirm)
         self.b_confirm.pack(padx=10, side='right')
 
@@ -238,6 +247,7 @@ class AddFolderWindow(CTk.CTkToplevel):
         vs.temp_from_pathes = []
         vs.temp_from_names = []
         vs.temp_amount = 3
+        vs.temp_no_multiple_flag = False
 
     def dismiss(self):
         vs.toplevel_window = None
@@ -273,6 +283,11 @@ class AddFolderWindow(CTk.CTkToplevel):
                         if not uniq_name_flag:
                             vs.temp_name = name
                             vs.temp_amount = int(amount)
+
+                            no_multiple = 'False'
+                            if vs.temp_no_multiple_flag:
+                                no_multiple = vs.temp_no_multiple_flag
+
                             if vs.temp_date:
                                 if vs.today_flag:
                                     vs.multi_paths[name] = {
@@ -280,7 +295,8 @@ class AddFolderWindow(CTk.CTkToplevel):
                                         'to_path': vs.temp_to_path,
                                         'on_date': vs.temp_date,
                                         'today': 'True',
-                                        'amount': vs.temp_amount
+                                        'amount': vs.temp_amount,
+                                        'no_multiple': no_multiple
                                     }
                                 else:
                                     vs.multi_paths[name] = {
@@ -288,7 +304,8 @@ class AddFolderWindow(CTk.CTkToplevel):
                                         'to_path': vs.temp_to_path,
                                         'on_date': vs.temp_date,
                                         'today': 'False',
-                                        'amount': vs.temp_amount
+                                        'amount': vs.temp_amount,
+                                        'no_multiple': no_multiple
                                     }
                             else:
                                 vs.multi_paths[name] = {
@@ -296,7 +313,8 @@ class AddFolderWindow(CTk.CTkToplevel):
                                     'to_path': vs.temp_to_path,
                                     'on_date': 'False',
                                     'today': 'False',
-                                    'amount': vs.temp_amount
+                                    'amount': vs.temp_amount,
+                                    'no_multiple': no_multiple
                                 }
                             # Перезаписываем конфиг
                             code = service_funcs.update_config(vs.multi_paths)
@@ -338,6 +356,10 @@ class AddFolderWindow(CTk.CTkToplevel):
                                 self.e_amount.delete(0, tkinter.END)
                                 self.e_amount.insert(0, vs.temp_amount)
                                 self.e_amount.configure(state='disabled')
+
+                                vs.temp_no_multiple_flag = False
+                                self.no_multiple_checkbox.deselect()
+                                vs.temp_no_multiple_flag = self.no_multiple_checkbox.get()
                         else:
                             mes.showerror('Ошибка добавления имени', f'Указанное имя маршрута "{name}" уже есть в списке!')
                     else:
